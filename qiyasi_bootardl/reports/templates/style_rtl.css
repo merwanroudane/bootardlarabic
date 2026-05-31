@@ -1,0 +1,19 @@
+/* RTL Arabic report stylesheet for قياسي BootARDL.
+   ورقة أنماط عربية بترتيب من اليمين إلى اليسار. */
+body { font-family: 'Segoe UI', 'Tahoma', sans-serif; direction: rtl;
+       text-align: right; background: #fafafa; color: #1a1a1a; margin: 2em; }
+h1 { color: #0b5394; border-bottom: 3px solid #0b5394; padding-bottom: .3em; }
+h2 { color: #134f5c; margin-top: 1.5em; }
+table { border-collapse: collapse; margin: 1em 0; width: 100%; background: #fff; }
+th, td { border: 1px solid #ccc; padding: .5em .8em; text-align: center; }
+th { background: #0b5394; color: #fff; }
+tr:nth-child(even) { background: #f0f6fb; }
+.decision { padding: 1em; border-radius: 8px; font-size: 1.1em; font-weight: bold; }
+.coint { background: #d9ead3; border: 2px solid #6aa84f; }
+.nocoint { background: #f4cccc; border: 2px solid #cc0000; }
+.incon { background: #fff2cc; border: 2px solid #f1c232; }
+.degen { background: #fce5cd; border: 2px solid #e69138; }
+.warn { background: #fff8e1; border-right: 4px solid #f1c232; padding: .6em; margin: .4em 0; }
+.advice { color: #555; font-size: .92em; }
+.note { font-size: .85em; color: #777; }
+footer { margin-top: 2em; font-size: .85em; color: #666; border-top: 1px solid #ccc; padding-top: 1em; }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- قالب تقرير قياسي BootARDL (RTL). التقرير الفعلي يُولَّد برمجياً في html_report.py؛
+     هذا القالب مرجعي للتخصيص اليدوي. Reference template; the live report is built in html_report.py. -->
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8">
+  <title>اختبار ARDL بالبوتستراب للتكامل المشترك</title>
+  <link rel="stylesheet" href="style_rtl.css">
+</head>
+<body>
+  <h1>{{ test_name }}</h1>
+
+  <table>
+    <tr><th>المتغير التابع</th><td>{{ yvar }}</td></tr>
+    <tr><th>المتغيرات المستقلة</th><td>{{ xvars }}</td></tr>
+    <tr><th>الحالة المحددة</th><td>{{ case_name }}</td></tr>
+    <tr><th>عدد المشاهدات</th><td>{{ n_obs }}</td></tr>
+    <tr><th>فترات الإبطاء</th><td>{{ diff_lags }}</td></tr>
+    <tr><th>عدد تكرارات البوتستراب</th><td>{{ n_boot }}</td></tr>
+  </table>
+
+  <h2>القرار النهائي</h2>
+  <div class="decision {{ decision_class }}">{{ decision_label }}</div>
+  <p>{{ decision_detail }}</p>
+
+  <h2>التفسير</h2>
+  <p>{{ interpretation }}</p>
+
+  <h2>إحصائيات الاختبار</h2>
+  {{ statistics_table }}
+
+  <h2>القيم الحرجة بالبوتستراب</h2>
+  {{ bootstrap_table }}
+
+  <h2>التحذيرات المنهجية</h2>
+  {{ warnings_block }}
+
+  <footer>قياسي BootARDL — تأليف د. مروان رودان (Dr. Merwan Roudane)</footer>
+</body>
+</html>

@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qiyasi-bootardl"
+version = "0.1.0"
+description = "Arabic-first Bootstrap ARDL cointegration testing in Python"
+readme = "README_PYPI.md"
+requires-python = ">=3.9"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Dr. Merwan Roudane" }]
+keywords = ["ARDL", "cointegration", "bootstrap", "econometrics", "Arabic", "PSS", "bounds test"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Natural Language :: Arabic",
+]
+dependencies = [
+    "numpy>=1.21",
+    "pandas>=1.3",
+    "scipy>=1.7",
+    "statsmodels>=0.13",
+    "jinja2>=3.0",
+]
+
+[project.optional-dependencies]
+reports = ["openpyxl>=3.0", "python-docx>=0.8.11"]
+parallel = ["joblib>=1.1", "tqdm>=4.62"]
+plots = ["matplotlib>=3.4", "arabic-reshaper>=3.0", "python-bidi>=0.4"]
+dev = ["pytest>=7.0", "black", "ruff"]
+all = [
+    "openpyxl>=3.0",
+    "python-docx>=0.8.11",
+    "joblib>=1.1",
+    "tqdm>=4.62",
+    "matplotlib>=3.4",
+    "arabic-reshaper>=3.0",
+    "python-bidi>=0.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/merwanroudane/bootardlarabic"
+Repository = "https://github.com/merwanroudane/bootardlarabic"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qiyasi_bootardl*"]
+
+[tool.setuptools.package-data]
+qiyasi_bootardl = ["reports/templates/*.html", "reports/templates/*.css", "datasets/*.csv"]
+
+[tool.pytest.ini_options]
+testpaths = ["qiyasi_bootardl/tests"]
