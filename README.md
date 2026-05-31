@@ -80,6 +80,18 @@ print(النتيجة.تفسير())
 النتيجة.تقرير_HTML("تقرير.html")
 ```
 
+## Documentation & worked example (Arabic)
+
+- **Project page (Arabic, RTL):** https://merwanroudane.github.io/bootardlarabic/
+- **Worked notebook on real data:** [docs/تحليل_ARDL_بيانات_حقيقية.ipynb](docs/تحليل_ARDL_بيانات_حقيقية.ipynb)
+  — applies the test to real West German macro data (Lütkepohl 2007: consumption,
+  income, investment) with full Arabic tables and light-themed plots.
+
+```python
+from qiyasi_bootardl.datasets import تحميل_بيانات_ألمانيا, load_german_macro
+البيانات = تحميل_بيانات_ألمانيا()   # 92 quarterly obs, Arabic columns
+```
+
 ## Deterministic cases (PSS 2001)
 
 | Case | Intercept | Trend |

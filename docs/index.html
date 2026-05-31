@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>قياسي BootARDL — اختبار ARDL بالبوتستراب بالعربية</title>
+<meta name="description" content="مكتبة بايثون عربية أولاً لاختبار التكامل المشترك ARDL بالبوتستراب — د. مروان رودان">
+<style>
+  :root {
+    --primary:#0b5394; --secondary:#134f5c; --accent:#e69138;
+    --coint:#5fa052; --bg:#f5f8fc; --card:#ffffff; --text:#1a1a2e;
+    --muted:#5a6b7b; --border:#e0e8f1;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Segoe UI",Tahoma,Arial,sans-serif; line-height:1.95;
+    direction:rtl;
+  }
+  a { color:var(--primary); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  header {
+    background:linear-gradient(135deg,#0b5394 0%,#134f5c 100%);
+    color:#fff; padding:54px 20px 46px; text-align:center;
+  }
+  header h1 { margin:0 0 6px; font-size:2.4rem; letter-spacing:.5px; }
+  header .sub { font-size:1.15rem; opacity:.95; margin:4px 0; }
+  header .author { font-size:1.05rem; margin-top:14px; font-weight:600; }
+  .links { margin-top:20px; }
+  .links a {
+    display:inline-block; margin:6px; padding:9px 18px; border-radius:24px;
+    background:rgba(255,255,255,.16); color:#fff; font-weight:600;
+    border:1px solid rgba(255,255,255,.35); transition:.2s;
+  }
+  .links a:hover { background:#fff; color:var(--primary); text-decoration:none; }
+  main { max-width:1080px; margin:0 auto; padding:24px 18px 60px; }
+  section {
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:26px 28px; margin:22px 0; box-shadow:0 2px 10px rgba(11,83,148,.06);
+  }
+  h2 {
+    color:var(--primary); border-right:5px solid var(--accent);
+    padding-right:12px; margin-top:0; font-size:1.6rem;
+  }
+  h3 { color:var(--secondary); font-size:1.25rem; }
+  code, pre { font-family:Consolas,"Courier New",monospace; direction:ltr; }
+  pre {
+    background:#0f2233; color:#e8eef5; padding:16px 18px; border-radius:10px;
+    overflow:auto; text-align:left; font-size:.92rem;
+  }
+  pre code { color:#e8eef5; }
+  .inline-code {
+    background:#eef3f9; color:#0b5394; padding:2px 7px; border-radius:5px;
+    font-size:.92em;
+  }
+  .badge {
+    display:inline-block; background:var(--coint); color:#fff; font-weight:700;
+    padding:6px 16px; border-radius:20px; font-size:1.05rem;
+  }
+  .stat-cards { display:flex; gap:14px; flex-wrap:wrap; margin:18px 0; }
+  .stat-cards .c {
+    flex:1 1 150px; background:#f3f7fb; border:1px solid var(--border);
+    border-radius:12px; padding:16px; text-align:center;
+  }
+  .stat-cards .c .v { font-size:1.7rem; font-weight:800; color:var(--primary); }
+  .stat-cards .c .l { color:var(--muted); font-size:.95rem; margin-top:4px; }
+  .plot { margin:18px 0; text-align:center; }
+  .plot img {
+    max-width:100%; height:auto; border:1px solid var(--border);
+    border-radius:10px; background:#fff; box-shadow:0 2px 8px rgba(11,83,148,.08);
+  }
+  .plot figcaption { color:var(--muted); margin-top:8px; font-size:.95rem; }
+  table { max-width:100%; }
+  .note {
+    background:#fff8ec; border-right:4px solid var(--accent);
+    padding:14px 18px; border-radius:8px; margin:16px 0;
+  }
+  .cases { width:100%; border-collapse:collapse; margin-top:10px; }
+  .cases th, .cases td { border:1px solid var(--border); padding:9px 12px; text-align:center; }
+  .cases th { background:var(--primary); color:#fff; }
+  .cases tr:nth-child(even) td { background:#f3f7fb; }
+  footer {
+    background:#0f2233; color:#cfdae6; text-align:center; padding:30px 20px;
+    font-size:.95rem;
+  }
+  footer a { color:#8ec5ff; }
+  ul { padding-right:22px; }
+  .ltr { direction:ltr; text-align:left; }
+</style>
+</head>
+<body>
+<header>
+  <h1>قياسي BootARDL</h1>
+  <div class="sub">اختبار التكامل المشترك ARDL بالبوتستراب (اختبار الحدود) — مكتبة بايثون عربية أولاً</div>
+  <div class="sub">تصميم أحادي المعادلة بدون VECM</div>
+  <div class="author">المؤلف: د. مروان رودان (Dr. Merwan Roudane) — الترخيص: GPL-3.0</div>
+  <div class="links">
+    <a href="https://pypi.org/project/qiyasi-bootardl/0.1.0/">📦 الحزمة على PyPI</a>
+    <a href="https://github.com/merwanroudane/bootardlarabic">💻 المستودع على GitHub</a>
+    <a href="تحليل_ARDL_بيانات_حقيقية.ipynb">📓 الدفتر التفاعلي (Notebook)</a>
+  </div>
+</header>
+
+<main>
+
+<section>
+  <h2>نظرة عامة</h2>
+  <p>
+    <strong>قياسي BootARDL</strong> مكتبة بايثون <strong>عربية أولاً</strong> لاختبار
+    التكامل المشترك <strong>ARDL بالبوتستراب</strong>. الواجهة الأساسية والمخرجات
+    والتقارير والرسوم كلها بالعربية، مع واجهة إنجليزية مطابقة تستدعي
+    <strong>المحرّك المشترك نفسه</strong>. التصميم أحادي المعادلة و<strong>بدون
+    VECM</strong>: تُولَّد التوزيعات الصفرية عبر بوتستراب لبواقي نموذج ARDL المشروط
+    مع تثبيت المتغيرات المستقلة، فالاستدلال مشروط بالمتغيرات المرصودة.
+  </p>
+  <pre class="ltr"><code>pip install qiyasi-bootardl
+pip install "qiyasi-bootardl[all]"   # التقارير والرسوم والتسريع</code></pre>
+</section>
+
+<section>
+  <h2>خلفية نظرية موجزة</h2>
+  <p>
+    يسمح نموذج الانحدار الذاتي للإبطاءات الموزّعة (ARDL) باختبار التكامل المشترك
+    دون اشتراط أن تكون السلاسل من الرتبة نفسها؛ يكفي أن تكون متكاملة من الرتبة
+    صفر <span class="inline-code">I(0)</span> أو الأولى <span class="inline-code">I(1)</span>
+    (وليست <span class="inline-code">I(2)</span>). تُكتب صيغة تصحيح الخطأ المشروطة:
+  </p>
+  <pre class="ltr"><code>&Delta;y&#8348; = &alpha;&#8320; + &rho;&middot;y&#8348;&#8331;&#8321; + &Sigma;&#8323; &theta;&#8323;&middot;x&#8323;,&#8348;&#8331;&#8321;
+      + &Sigma;&#7522; &gamma;&#7522;&middot;&Delta;y&#8348;&#8331;&#7522; + &Sigma;&#8323;&Sigma;&#7522; &delta;&#8323;,&#7522;&middot;&Delta;x&#8323;,&#8348;&#8331;&#7522; + &epsilon;&#8348;</code></pre>
+  <p>ويعتمد اختبار الحدود (Pesaran, Shin &amp; Smith 2001) على ثلاث إحصائيات:</p>
+  <ul>
+    <li><strong>إحصائية F الكلية:</strong> تختبر غياب علاقة المستوى طويلة الأجل
+      (<span class="inline-code">&rho; = &theta;&#8321; = … = &theta;&#8342; = 0</span>).</li>
+    <li><strong>إحصائية t:</strong> تختبر معامل المتغير التابع المُبطأ
+      (<span class="inline-code">&rho; = 0</span>).</li>
+    <li><strong>إحصائية F للمتغيرات المستقلة:</strong> تُستخدم لكشف
+      <strong>التكامل المشترك الزائف/المتدهور</strong> (McNown, Sam &amp; Goh 2018؛
+      Sam, McNown &amp; Goh 2019).</li>
+  </ul>
+  <div class="note">
+    <strong>لماذا البوتستراب؟</strong> القيم الحرجة التقاربية لاختبار PSS مبنية على
+    عيّنات لا نهائية وقد تكون غير دقيقة في العيّنات الصغيرة. لذا تولّد الحزمة
+    <strong>توزيعات صفرية بالبوتستراب خاصة بالعيّنة</strong>، والقرار الأساسي يعتمد
+    عليها لأنها أدقّ للعيّنة محل الدراسة.
+  </div>
+  <h3>الحالات الحتمية (PSS 2001)</h3>
+  <table class="cases">
+    <tr><th>الحالة</th><th>الثابت</th><th>الاتجاه الزمني</th></tr>
+    <tr><td>1</td><td>بدون</td><td>بدون</td></tr>
+    <tr><td>2</td><td>مقيّد</td><td>بدون</td></tr>
+    <tr><td>3</td><td>غير مقيّد</td><td>بدون</td></tr>
+    <tr><td>4</td><td>غير مقيّد</td><td>مقيّد</td></tr>
+    <tr><td>5</td><td>غير مقيّد</td><td>غير مقيّد</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>تطبيق على بيانات حقيقية</h2>
+  <p>
+    نطبّق الاختبار على سلاسل الاقتصاد الكلي الحقيقية لألمانيا الغربية
+    (Lütkepohl 2007): <strong>الاستهلاك</strong> و<strong>الدخل</strong>
+    و<strong>الاستثمار</strong>، ربعية موسمياً معدّلة من 1960Q1 إلى 1982Q4
+    (92 مشاهدة، مليار مارك ألماني). نختبر العلاقة طويلة الأجل بين
+    <strong>الاستهلاك</strong> (المتغير التابع) و<strong>الدخل</strong>
+    و<strong>الاستثمار</strong> بعد أخذ اللوغاريتم الطبيعي.
+  </p>
+  <pre class="ltr"><code>import numpy as np
+from qiyasi_bootardl import اختبار_ARDL_بالبوتستراب
+from qiyasi_bootardl.datasets import تحميل_بيانات_ألمانيا
+
+البيانات = تحميل_بيانات_ألمانيا().set_index("التاريخ")
+لوغ = np.log(البيانات); لوغ.columns = ["لو_"+c for c in البيانات.columns]
+
+النتيجة = اختبار_ARDL_بالبوتستراب(
+    لوغ, المتغير_التابع="لو_الاستهلاك",
+    المتغيرات_المستقلة=["لو_الدخل", "لو_الاستثمار"],
+    الحالة=3, أقصى_إبطاء=4, عدد_تكرارات_البوتستراب=2000, عشوائية=2024,
+)
+print(النتيجة.ملخص())</code></pre>
+  <figure class="plot"><img src="results/السلاسل_الزمنية.png" alt="السلاسل الزمنية للمتغيرات (لوغاريتمية)" loading="lazy"><figcaption>السلاسل الزمنية للمتغيرات (لوغاريتمية)</figcaption></figure>
+</section>
+
+<section>
+  <h2>القرار النهائي</h2>
+  <p><span class="badge">وجود تكامل مشترك — عند 5%</span></p>
+  <p>
+    تتفق الإحصائيات الثلاث (F الكلية، t، F للمتغيرات المستقلة) على رفض فرضية عدم
+    وجود تكامل مشترك. توجد علاقة توازنية طويلة الأجل بين الاستهلاك والدخل والاستثمار.
+    يمكن المضي قُدماً في تقدير معاملات الأجل الطويل ونموذج تصحيح الخطأ (ECM) لتقدير
+    سرعة التعديل نحو التوازن.
+  </p>
+  <div class="stat-cards">
+    <div class="c"><div class="v">13.98</div><div class="l">إحصائية F الكلية<br>(الحرجة 5% = 4.02)</div></div>
+    <div class="c"><div class="v">-6.46</div><div class="l">إحصائية t<br>(الحرجة 5% = -3.04)</div></div>
+    <div class="c"><div class="v">20.85</div><div class="l">F للمتغيرات المستقلة<br>(الحرجة 5% = 5.34)</div></div>
+  </div>
+  <figure class="plot"><img src="results/القرار.png" alt="مقارنة الإحصائيات المحسوبة بالقيم الحرجة بالبوتستراب" loading="lazy"><figcaption>مقارنة الإحصائيات المحسوبة بالقيم الحرجة بالبوتستراب</figcaption></figure>
+</section>
+
+<section>
+  <h2>جداول النتائج</h2>
+  <h3>إحصائيات الاختبار</h3>
+  <div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#ffffff;padding:6px"><style type="text/css">
+#T_0d729 caption {
+  caption-side: top;
+  font-size: 15px;
+  font-weight: bold;
+  color: #0b5394;
+  padding: 8px;
+  text-align: right;
+}
+#T_0d729 th {
+  background-color: #0b5394;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  border: 1px solid #d6e0ea;
+}
+#T_0d729 td {
+  padding: 7px 12px;
+  text-align: center;
+  border: 1px solid #e3eaf2;
+  color: #1a1a2e;
+}
+#T_0d729 tr:nth-child(even) td {
+  background-color: #f3f7fb;
+}
+#T_0d729 table {
+  border-collapse: collapse;
+  direction: rtl;
+  font-family: Tahoma, Arial, sans-serif;
+  margin: 8px auto;
+  box-shadow: 0 1px 4px rgba(11,83,148,.12);
+}
+</style>
+<table id="T_0d729">
+  <caption>إحصائيات الاختبار الثلاث</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_0d729_level0_col0" class="col_heading level0 col0" >الإحصائية</th>
+      <th id="T_0d729_level0_col1" class="col_heading level0 col1" >القيمة_الاحتمالية_التقاربية</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_0d729_level0_row0" class="row_heading level0 row0" >إحصائية F الكلية</th>
+      <td id="T_0d729_row0_col0" class="data row0 col0" >13.9765</td>
+      <td id="T_0d729_row0_col1" class="data row0 col1" >0.0000</td>
+    </tr>
+    <tr>
+      <th id="T_0d729_level0_row1" class="row_heading level0 row1" >إحصائية t للمتغير التابع المتأخر</th>
+      <td id="T_0d729_row1_col0" class="data row1 col0" >-6.4602</td>
+      <td id="T_0d729_row1_col1" class="data row1 col1" >0.0000</td>
+    </tr>
+    <tr>
+      <th id="T_0d729_level0_row2" class="row_heading level0 row2" >إحصائية F للمتغيرات المستقلة المتأخرة</th>
+      <td id="T_0d729_row2_col0" class="data row2 col0" >20.8496</td>
+      <td id="T_0d729_row2_col1" class="data row2 col1" >0.0000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+  <h3>القيم الحرجة بالبوتستراب</h3>
+  <div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#ffffff;padding:6px"><style type="text/css">
+#T_078b6 caption {
+  caption-side: top;
+  font-size: 15px;
+  font-weight: bold;
+  color: #0b5394;
+  padding: 8px;
+  text-align: right;
+}
+#T_078b6 th {
+  background-color: #0b5394;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  border: 1px solid #d6e0ea;
+}
+#T_078b6 td {
+  padding: 7px 12px;
+  text-align: center;
+  border: 1px solid #e3eaf2;
+  color: #1a1a2e;
+}
+#T_078b6 tr:nth-child(even) td {
+  background-color: #f3f7fb;
+}
+#T_078b6 table {
+  border-collapse: collapse;
+  direction: rtl;
+  font-family: Tahoma, Arial, sans-serif;
+  margin: 8px auto;
+  box-shadow: 0 1px 4px rgba(11,83,148,.12);
+}
+</style>
+<table id="T_078b6">
+  <caption>القيم الحرجة بالبوتستراب</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_078b6_level0_col0" class="col_heading level0 col0" >القيمة_الحرجة_F_الكلية</th>
+      <th id="T_078b6_level0_col1" class="col_heading level0 col1" >القيمة_الحرجة_t</th>
+      <th id="T_078b6_level0_col2" class="col_heading level0 col2" >القيمة_الحرجة_F_المستقلة_مشروط</th>
+      <th id="T_078b6_level0_col3" class="col_heading level0 col3" >القيمة_الحرجة_F_المستقلة_غير_مشروط</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_078b6_level0_row0" class="row_heading level0 row0" >10%</th>
+      <td id="T_078b6_row0_col0" class="data row0 col0" >3.3505</td>
+      <td id="T_078b6_row0_col1" class="data row0 col1" >-2.6611</td>
+      <td id="T_078b6_row0_col2" class="data row0 col2" >4.3221</td>
+      <td id="T_078b6_row0_col3" class="data row0 col3" >3.5061</td>
+    </tr>
+    <tr>
+      <th id="T_078b6_level0_row1" class="row_heading level0 row1" >5%</th>
+      <td id="T_078b6_row1_col0" class="data row1 col0" >4.0233</td>
+      <td id="T_078b6_row1_col1" class="data row1 col1" >-3.0365</td>
+      <td id="T_078b6_row1_col2" class="data row1 col2" >5.3397</td>
+      <td id="T_078b6_row1_col3" class="data row1 col3" >4.4615</td>
+    </tr>
+    <tr>
+      <th id="T_078b6_level0_row2" class="row_heading level0 row2" >1%</th>
+      <td id="T_078b6_row2_col0" class="data row2 col0" >5.6554</td>
+      <td id="T_078b6_row2_col1" class="data row2 col1" >-3.7422</td>
+      <td id="T_078b6_row2_col2" class="data row2 col2" >8.0939</td>
+      <td id="T_078b6_row2_col3" class="data row2 col3" >6.9190</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+  <h3>القيم الاحتمالية بالبوتستراب</h3>
+  <div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#ffffff;padding:6px"><style type="text/css">
+#T_949c2 caption {
+  caption-side: top;
+  font-size: 15px;
+  font-weight: bold;
+  color: #0b5394;
+  padding: 8px;
+  text-align: right;
+}
+#T_949c2 th {
+  background-color: #0b5394;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  border: 1px solid #d6e0ea;
+}
+#T_949c2 td {
+  padding: 7px 12px;
+  text-align: center;
+  border: 1px solid #e3eaf2;
+  color: #1a1a2e;
+}
+#T_949c2 tr:nth-child(even) td {
+  background-color: #f3f7fb;
+}
+#T_949c2 table {
+  border-collapse: collapse;
+  direction: rtl;
+  font-family: Tahoma, Arial, sans-serif;
+  margin: 8px auto;
+  box-shadow: 0 1px 4px rgba(11,83,148,.12);
+}
+</style>
+<table id="T_949c2">
+  <caption>القيم الاحتمالية بالبوتستراب</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_949c2_level0_col0" class="col_heading level0 col0" >القيمة_الاحتمالية_بالبوتستراب</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_949c2_level0_row0" class="row_heading level0 row0" >إحصائية F الكلية</th>
+      <td id="T_949c2_row0_col0" class="data row0 col0" >0.0005</td>
+    </tr>
+    <tr>
+      <th id="T_949c2_level0_row1" class="row_heading level0 row1" >إحصائية t للمتغير التابع المتأخر</th>
+      <td id="T_949c2_row1_col0" class="data row1 col0" >0.0000</td>
+    </tr>
+    <tr>
+      <th id="T_949c2_level0_row2" class="row_heading level0 row2" >إحصائية F للمتغيرات المستقلة المتأخرة</th>
+      <td id="T_949c2_row2_col0" class="data row2 col0" >0.0000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+  <h3>معاملات النموذج المشروط</h3>
+  <div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#ffffff;padding:6px"><style type="text/css">
+#T_02836 caption {
+  caption-side: top;
+  font-size: 15px;
+  font-weight: bold;
+  color: #0b5394;
+  padding: 8px;
+  text-align: right;
+}
+#T_02836 th {
+  background-color: #0b5394;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  border: 1px solid #d6e0ea;
+}
+#T_02836 td {
+  padding: 7px 12px;
+  text-align: center;
+  border: 1px solid #e3eaf2;
+  color: #1a1a2e;
+}
+#T_02836 tr:nth-child(even) td {
+  background-color: #f3f7fb;
+}
+#T_02836 table {
+  border-collapse: collapse;
+  direction: rtl;
+  font-family: Tahoma, Arial, sans-serif;
+  margin: 8px auto;
+  box-shadow: 0 1px 4px rgba(11,83,148,.12);
+}
+</style>
+<table id="T_02836">
+  <caption>معاملات النموذج المشروط</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_02836_level0_col0" class="col_heading level0 col0" >المعامل</th>
+      <th id="T_02836_level0_col1" class="col_heading level0 col1" >الخطأ_المعياري</th>
+      <th id="T_02836_level0_col2" class="col_heading level0 col2" >إحصائية_t</th>
+      <th id="T_02836_level0_col3" class="col_heading level0 col3" >القيمة_الاحتمالية</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_02836_level0_row0" class="row_heading level0 row0" >const</th>
+      <td id="T_02836_row0_col0" class="data row0 col0" >0.0424</td>
+      <td id="T_02836_row0_col1" class="data row0 col1" >0.0119</td>
+      <td id="T_02836_row0_col2" class="data row0 col2" >3.5713</td>
+      <td id="T_02836_row0_col3" class="data row0 col3" >0.0006</td>
+    </tr>
+    <tr>
+      <th id="T_02836_level0_row1" class="row_heading level0 row1" >لو_الاستهلاك.l1</th>
+      <td id="T_02836_row1_col0" class="data row1 col0" >-0.3338</td>
+      <td id="T_02836_row1_col1" class="data row1 col1" >0.0517</td>
+      <td id="T_02836_row1_col2" class="data row1 col2" >-6.4602</td>
+      <td id="T_02836_row1_col3" class="data row1 col3" >0.0000</td>
+    </tr>
+    <tr>
+      <th id="T_02836_level0_row2" class="row_heading level0 row2" >لو_الدخل.l1</th>
+      <td id="T_02836_row2_col0" class="data row2 col0" >0.3345</td>
+      <td id="T_02836_row2_col1" class="data row2 col1" >0.0523</td>
+      <td id="T_02836_row2_col2" class="data row2 col2" >6.4004</td>
+      <td id="T_02836_row2_col3" class="data row2 col3" >0.0000</td>
+    </tr>
+    <tr>
+      <th id="T_02836_level0_row3" class="row_heading level0 row3" >لو_الاستثمار.l1</th>
+      <td id="T_02836_row3_col0" class="data row3 col0" >-0.0136</td>
+      <td id="T_02836_row3_col1" class="data row3 col1" >0.0114</td>
+      <td id="T_02836_row3_col2" class="data row3 col2" >-1.1914</td>
+      <td id="T_02836_row3_col3" class="data row3 col3" >0.2371</td>
+    </tr>
+    <tr>
+      <th id="T_02836_level0_row4" class="row_heading level0 row4" >D_لو_الاستهلاك.l1</th>
+      <td id="T_02836_row4_col0" class="data row4 col0" >-0.3300</td>
+      <td id="T_02836_row4_col1" class="data row4 col1" >0.0790</td>
+      <td id="T_02836_row4_col2" class="data row4 col2" >-4.1793</td>
+      <td id="T_02836_row4_col3" class="data row4 col3" >0.0001</td>
+    </tr>
+    <tr>
+      <th id="T_02836_level0_row5" class="row_heading level0 row5" >D_لو_الاستثمار.l1</th>
+      <td id="T_02836_row5_col0" class="data row5 col0" >0.0368</td>
+      <td id="T_02836_row5_col1" class="data row5 col1" >0.0202</td>
+      <td id="T_02836_row5_col2" class="data row5 col2" >1.8221</td>
+      <td id="T_02836_row5_col3" class="data row5 col3" >0.0723</td>
+    </tr>
+    <tr>
+      <th id="T_02836_level0_row6" class="row_heading level0 row6" >D_لو_الاستثمار.l2</th>
+      <td id="T_02836_row6_col0" class="data row6 col0" >0.0615</td>
+      <td id="T_02836_row6_col1" class="data row6 col1" >0.0186</td>
+      <td id="T_02836_row6_col2" class="data row6 col2" >3.3105</td>
+      <td id="T_02836_row6_col3" class="data row6 col3" >0.0014</td>
+    </tr>
+    <tr>
+      <th id="T_02836_level0_row7" class="row_heading level0 row7" >D_لو_الاستثمار.l3</th>
+      <td id="T_02836_row7_col0" class="data row7 col0" >0.0510</td>
+      <td id="T_02836_row7_col1" class="data row7 col1" >0.0185</td>
+      <td id="T_02836_row7_col2" class="data row7 col2" >2.7487</td>
+      <td id="T_02836_row7_col3" class="data row7 col3" >0.0074</td>
+    </tr>
+    <tr>
+      <th id="T_02836_level0_row8" class="row_heading level0 row8" >D_لو_الدخل</th>
+      <td id="T_02836_row8_col0" class="data row8 col0" >0.4298</td>
+      <td id="T_02836_row8_col1" class="data row8 col1" >0.0713</td>
+      <td id="T_02836_row8_col2" class="data row8 col2" >6.0299</td>
+      <td id="T_02836_row8_col3" class="data row8 col3" >0.0000</td>
+    </tr>
+    <tr>
+      <th id="T_02836_level0_row9" class="row_heading level0 row9" >D_لو_الاستثمار</th>
+      <td id="T_02836_row9_col0" class="data row9 col0" >0.0641</td>
+      <td id="T_02836_row9_col1" class="data row9 col1" >0.0181</td>
+      <td id="T_02836_row9_col2" class="data row9 col2" >3.5383</td>
+      <td id="T_02836_row9_col3" class="data row9 col3" >0.0007</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+  <h3>الحدود التقاربية (PSS 2001)</h3>
+  <div dir="rtl" style="font-family:Tahoma,Arial,sans-serif;background:#ffffff;padding:6px"><style type="text/css">
+#T_32946 caption {
+  caption-side: top;
+  font-size: 15px;
+  font-weight: bold;
+  color: #0b5394;
+  padding: 8px;
+  text-align: right;
+}
+#T_32946 th {
+  background-color: #0b5394;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  border: 1px solid #d6e0ea;
+}
+#T_32946 td {
+  padding: 7px 12px;
+  text-align: center;
+  border: 1px solid #e3eaf2;
+  color: #1a1a2e;
+}
+#T_32946 tr:nth-child(even) td {
+  background-color: #f3f7fb;
+}
+#T_32946 table {
+  border-collapse: collapse;
+  direction: rtl;
+  font-family: Tahoma, Arial, sans-serif;
+  margin: 8px auto;
+  box-shadow: 0 1px 4px rgba(11,83,148,.12);
+}
+</style>
+<table id="T_32946">
+  <caption>حدود PSS التقاربية</caption>
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_32946_level0_col0" class="col_heading level0 col0" >F_الحد_الأدنى_I0</th>
+      <th id="T_32946_level0_col1" class="col_heading level0 col1" >F_الحد_الأعلى_I1</th>
+      <th id="T_32946_level0_col2" class="col_heading level0 col2" >t_الحد_الأدنى_I0</th>
+      <th id="T_32946_level0_col3" class="col_heading level0 col3" >t_الحد_الأعلى_I1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_32946_level0_row0" class="row_heading level0 row0" >1%</th>
+      <td id="T_32946_row0_col0" class="data row0 col0" >4.1300</td>
+      <td id="T_32946_row0_col1" class="data row0 col1" >5.0000</td>
+      <td id="T_32946_row0_col2" class="data row0 col2" >-3.4300</td>
+      <td id="T_32946_row0_col3" class="data row0 col3" >-4.1000</td>
+    </tr>
+    <tr>
+      <th id="T_32946_level0_row1" class="row_heading level0 row1" >2.5%</th>
+      <td id="T_32946_row1_col0" class="data row1 col0" >3.5500</td>
+      <td id="T_32946_row1_col1" class="data row1 col1" >4.3800</td>
+      <td id="T_32946_row1_col2" class="data row1 col2" >-3.1300</td>
+      <td id="T_32946_row1_col3" class="data row1 col3" >-3.8000</td>
+    </tr>
+    <tr>
+      <th id="T_32946_level0_row2" class="row_heading level0 row2" >5%</th>
+      <td id="T_32946_row2_col0" class="data row2 col0" >3.1000</td>
+      <td id="T_32946_row2_col1" class="data row2 col1" >3.8700</td>
+      <td id="T_32946_row2_col2" class="data row2 col2" >-2.8600</td>
+      <td id="T_32946_row2_col3" class="data row2 col3" >-3.5300</td>
+    </tr>
+    <tr>
+      <th id="T_32946_level0_row3" class="row_heading level0 row3" >10%</th>
+      <td id="T_32946_row3_col0" class="data row3 col0" >2.6300</td>
+      <td id="T_32946_row3_col1" class="data row3 col1" >3.3500</td>
+      <td id="T_32946_row3_col2" class="data row3 col2" >-2.5700</td>
+      <td id="T_32946_row3_col3" class="data row3 col3" >-3.2100</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<section>
+  <h2>التوزيعات الصفرية بالبوتستراب وفحص التكامل الزائف</h2>
+  <figure class="plot"><img src="results/توزيعات_البوتستراب.png" alt="توزيعات البوتستراب الصفرية للإحصائيات الثلاث" loading="lazy"><figcaption>توزيعات البوتستراب الصفرية للإحصائيات الثلاث</figcaption></figure>
+  <figure class="plot"><img src="results/التكامل_الزائف.png" alt="فحص التكامل المشترك الزائف/المتدهور (مشروط مقابل غير مشروط)" loading="lazy"><figcaption>فحص التكامل المشترك الزائف/المتدهور (مشروط مقابل غير مشروط)</figcaption></figure>
+</section>
+
+<section>
+  <h2>ملاحظات منهجية</h2>
+  <ul>
+    <li>القيم الحرجة لاختبار PSS المضمّنة <strong>تقاربية</strong> للراحة فقط؛
+      القرار الأساسي يعتمد على <strong>القيم الحرجة بالبوتستراب</strong>.</li>
+    <li>البوتستراب يُثبّت المتغيرات المستقلة X، فالاستدلال مشروط بها (مقايضة
+      التصميم بدون VECM).</li>
+    <li>تأكّد أن المتغيرات لا تتجاوز رتبة التكامل <span class="inline-code">I(1)</span>
+      (لا وجود لـ <span class="inline-code">I(2)</span>) قبل الاعتماد على النتائج.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>المراجع</h2>
+  <ul class="ltr">
+    <li>Pesaran, M. H., Shin, Y., &amp; Smith, R. J. (2001). <i>Journal of Applied Econometrics</i>, 16(3), 289–326.</li>
+    <li>Sam, C. Y., McNown, R., &amp; Goh, S. K. (2019). <i>Economic Modelling</i>, 80, 130–141.</li>
+    <li>McNown, R., Sam, C. Y., &amp; Goh, S. K. (2018). <i>Applied Economics</i>, 50(13), 1509–1521.</li>
+    <li>Narayan, P. K. (2005). <i>Applied Economics</i>, 37(17), 1979–1990.</li>
+    <li>Lütkepohl, H. (2007). <i>New Introduction to Multiple Time Series Analysis</i>. Springer.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>قياسي BootARDL</strong> — د. مروان رودان (Dr. Merwan Roudane) — الترخيص GPL-3.0</p>
+  <p>
+    <a href="https://pypi.org/project/qiyasi-bootardl/0.1.0/">PyPI: qiyasi-bootardl</a> &nbsp;•&nbsp;
+    <a href="https://github.com/merwanroudane/bootardlarabic">GitHub: bootardlarabic</a> &nbsp;•&nbsp;
+    <a href="تحليل_ARDL_بيانات_حقيقية.ipynb">الدفتر التفاعلي</a>
+  </p>
+</footer>
+</body>
+</html>
